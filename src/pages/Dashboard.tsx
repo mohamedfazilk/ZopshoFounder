@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Edit, Plus } from "lucide-react";
+import { Trash2, Edit, Plus, Upload,X, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAdmin } from "@/Context/AdminContext";
+import AdminLogin from "@/components/AdminLogin";
 
 interface Photo {
   id: number;
@@ -37,11 +39,15 @@ interface Passion {
 
 const Dashboard = () => {
   const { toast } = useToast();
+    const { isAuthenticated, login, logout } = useAdmin();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [passions, setPassions] = useState<Passion[]>([]);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [activeSection, setActiveSection] = useState("photos");
+
+
+
 
   // Load data from localStorage on component mount
   useEffect(() => {
@@ -57,6 +63,7 @@ const Dashboard = () => {
   // Save to localStorage whenever data changes
   useEffect(() => {
     localStorage.setItem('portfolio_photos', JSON.stringify(photos));
+      window.dispatchEvent(new CustomEvent('portfolio_photos_updated', { detail: photos }));
   }, [photos]);
 
   useEffect(() => {
@@ -66,6 +73,10 @@ const Dashboard = () => {
   useEffect(() => {
     localStorage.setItem('portfolio_passions', JSON.stringify(passions));
   }, [passions]);
+
+      if (!isAuthenticated) {
+    return <AdminLogin onLogin={login} />;
+  }
 
   const handleAddPhoto = (photoData: Omit<Photo, 'id'>) => {
     const newPhoto = { ...photoData, id: Date.now() };
@@ -104,8 +115,20 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Portfolio Dashboard</h1>
-          <p className="text-lg text-gray-600">Manage your portfolio content easily</p>
+           <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">Portfolio Dashboard</h1>
+              <p className="text-lg text-gray-600">Manage your portfolio content easily</p>
+            </div>
+            <Button 
+              onClick={logout}
+              variant="outline"
+              className="flex items-center space-x-2"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
           <Button 
             onClick={() => window.location.href = '/'}
             className="mt-4"
@@ -151,6 +174,29 @@ const Dashboard = () => {
   );
 };
 
+const compressImage = (file: File, maxWidth: number = 800, quality: number = 0.8): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate new dimensions
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+        
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedDataUrl);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+
 // Photo Manager Component
 const PhotoManager = ({ photos, onAdd, onDelete }: {
   photos: Photo[];
@@ -165,13 +211,61 @@ const PhotoManager = ({ photos, onAdd, onDelete }: {
     category: 'travel'
   });
 
+  const [uploadedImage, setUploadedImage] = useState<string>('');
+   const [isCompressing, setIsCompressing] = useState(false);
+
   const categories = ['travel', 'startup', 'football', 'events', 'community'];
+
+   const compressImage = (file: File, maxWidth: number = 800, quality: number = 0.8): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate new dimensions
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+        
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedDataUrl);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+
+ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsCompressing(true);
+      try {
+        const compressedImage = await compressImage(file);
+        setUploadedImage(compressedImage);
+        setFormData({...formData, src: compressedImage});
+      } catch (error) {
+        console.error('Error compressing image:', error);
+      } finally {
+        setIsCompressing(false);
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onAdd(formData);
     setFormData({ src: '', alt: '', location: '', category: 'travel' });
+    setUploadedImage('');
     setShowForm(false);
+  };
+
+  const removeUploadedImage = () => {
+    setUploadedImage('');
+    setFormData({...formData, src: ''});
   };
 
   return (
@@ -191,16 +285,52 @@ const PhotoManager = ({ photos, onAdd, onDelete }: {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+             <div>
+                <Label>Upload Image</Label>
+                <div className="mt-2">
+                  {!uploadedImage ? (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <div className="mt-4">
+                        <label htmlFor="image-upload" className="cursor-pointer">
+                          <span className="mt-2 block text-sm font-medium text-gray-900">
+                             {isCompressing ? 'Compressing image...' : 'Click to upload an image'}
+                          </span>
+                          <input
+                            id="image-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleImageUpload}
+                            disabled={isCompressing}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <img src={uploadedImage} alt="Uploaded" className="w-full h-32 object-cover rounded" />
+                      <button
+                        type="button"
+                        onClick={removeUploadedImage}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
               <div>
-                <Label htmlFor="src">Image URL</Label>
+                 <Label htmlFor="src">Or Enter Image URL</Label>
                 <Input
                   id="src"
                   value={formData.src}
                   onChange={(e) => setFormData({...formData, src: e.target.value})}
                   placeholder="https://example.com/image.jpg"
-                  required
+                  disabled={!!uploadedImage}
                 />
-              </div>
+                 </div>
               <div>
                 <Label htmlFor="alt">Description</Label>
                 <Input
@@ -235,7 +365,7 @@ const PhotoManager = ({ photos, onAdd, onDelete }: {
                 </select>
               </div>
               <div className="flex space-x-2">
-                <Button type="submit">Add Photo</Button>
+                 <Button type="submit" disabled={!formData.src}>Add Photo</Button>
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
                   Cancel
                 </Button>

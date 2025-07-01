@@ -8,6 +8,7 @@ import PhotosSection from "@/components/PhotosSection";
 import BlogSection from "@/components/BlogSection";
 import ContactSection from "@/components/ContactSection";
 import Navigation from "@/components/Navigation";
+import ServicesSection from "@/components/ServiceSection";
 
 const Index = () => {
   return (
@@ -19,6 +20,7 @@ const Index = () => {
       <AchievementsSection />
       <PassionsSection />
       <PhotosSection />
+      <ServicesSection/>
       <BlogSection />
       <ContactSection />
     </div>

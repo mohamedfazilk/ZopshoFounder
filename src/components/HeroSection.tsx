@@ -13,7 +13,8 @@ const HeroSection = () => {
               MF
             </div>
           </div> */}
-           <Avatar className="w-32 h-32 mx-auto mb-6 shadow-2xl">
+           {/* <Avatar className="w-32 h-32 mx-auto mb-6 shadow-2xl"> */}
+            <Avatar className="relative z-10 w-48 h-48 mx-auto mb-6 shadow-2xl border-8 border-white ring-8 ring-blue-500/30 hover:ring-blue-500/60 transition-all duration-500 transform hover:scale-110 bg-gradient-to-br from-white to-blue-50">
               <AvatarImage 
                 src="/indiagate.jpg" 
                 alt="Mohamed Fazil K" 
