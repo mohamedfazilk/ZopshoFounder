@@ -87,7 +87,10 @@ const ServicesSection = () => {
                                     </div>
                                 </div>
                                 <Button onClick={() => {
-                                    window.location.href = "mailto:mohamedfazil961@gmail.com";
+                                     console.log("Clicked");
+                                    // window.location.href = "mailto:mohamedfazil961@gmail.com";
+                                     window.location.href = "tel:+918086447566";
+                    
                                 }} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold transition-all duration-300">
                                     Connect With me
                                 </Button>
