@@ -9,8 +9,8 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-// You can change this admin password to whatever you want
-const ADMIN_PASSWORD = 'admin123'; // Change this to your preferred password
+
+const ADMIN_PASSWORD = 'admin123'; 
 
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

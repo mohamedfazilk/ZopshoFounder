@@ -12,32 +12,18 @@ interface Photo {
 }
 
 const PhotosSection = () => {
-  const [activeCategory, setActiveCategory] = useState("travel");
+  const [activeCategory, setActiveCategory] = useState("startup");
   const [photos, setPhotos] = useState<Photo[]>([]);
 
   const categories = [
+     { id: "startup", name: "Startup Life", icon: Camera, color: "from-blue-500 to-indigo-600" },
     { id: "travel", name: "Travel", icon: MapPin, color: "from-green-500 to-teal-600" },
-    { id: "startup", name: "Startup Life", icon: Camera, color: "from-blue-500 to-indigo-600" },
-    { id: "football", name: "Football Moments", icon: Trophy, color: "from-orange-500 to-red-600" },
+    // { id: "football", name: "Football Moments", icon: Trophy, color: "from-orange-500 to-red-600" },
     { id: "events", name: "Events & Meetups", icon: Users, color: "from-purple-500 to-pink-600" },
-    { id: "community", name: "Community Work", icon: Heart, color: "from-rose-500 to-pink-600" }
+    // { id: "community", name: "Community Work", icon: Heart, color: "from-rose-500 to-pink-600" }
   ];
 
 
-//   useEffect(() => {
-//   const savedPhotos = localStorage.getItem('portfolio_photos');
-
-//   // Force reloading updated photos (for development)
-//   const forceUpdatePhotos = true;
-
-//   if (savedPhotos && !forceUpdatePhotos) {
-//     setPhotos(JSON.parse(savedPhotos));
-//   } else {
-//     const allDefaultPhotos = Object.values(defaultPhotos).flat();
-//     setPhotos(allDefaultPhotos);
-//     localStorage.setItem('portfolio_photos', JSON.stringify(allDefaultPhotos));
-//   }
-// }, []);
 
  useEffect(() => {
     const loadPhotos = () => {
@@ -85,11 +71,11 @@ const PhotosSection = () => {
     <section id="photos" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-6">
             Photo <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Gallery</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
-          <p className="text-xl text-gray-600 mt-6 max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-gray-600 mt-6 max-w-3xl mx-auto">
             Capturing moments from my journey of innovation, adventure, and community impact
           </p>
         </div>

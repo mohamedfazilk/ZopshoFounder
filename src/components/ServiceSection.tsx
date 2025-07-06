@@ -51,11 +51,11 @@ const ServicesSection = () => {
         <section id="services" className="py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                    <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-6">
                         Development <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Services</span>
                     </h2>
                     <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
-                    <p className="text-xl text-gray-600 mt-6 max-w-3xl mx-auto">
+                    <p className="text-base sm:text-xl md:text-2xl text-gray-600 mt-6 max-w-3xl mx-auto">
                         Professional development services from our expert team. Let us bring your ideas to life with cutting-edge technology
                     </p>
                 </div>

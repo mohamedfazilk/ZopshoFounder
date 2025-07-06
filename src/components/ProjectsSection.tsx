@@ -31,11 +31,11 @@ const ProjectsSection = () => {
     <section id="projects" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-6">
             Projects & <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ventures</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
-          <p className="text-xl text-gray-600 mt-6 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mt-6 max-w-3xl mx-auto">
             Building innovative solutions that make a difference in the world
           </p>
         </div>
