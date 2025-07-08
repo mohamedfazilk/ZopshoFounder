@@ -1,9 +1,68 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
+import { Textarea } from "./ui/textarea";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "./ui/input";
+import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 const ContactSection = () => {
+
+  const [formData, setFormData] = useState(
+    {
+      firstName: '',
+    lastName: '',
+    email: '',
+    place: '',
+    description: ''
+    }
+  )
+  const [isSubmitting, setIssubmitting] = useState(false)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const {name, value} =e.target;
+    setFormData(prev=>({
+      ...prev,[name]:value
+    }))
+  }
+
+   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIssubmitting(true);
+
+    try {
+      const result = await emailjs.send(
+        "service_w7fpdt2",
+        // "template_42r8f91",
+        "template_oms2w9u",
+        {
+          from_name: `${formData.firstName} ${formData.lastName}`,
+          from_email: formData.email,
+          location: formData.place,
+          message: formData.description,
+        },
+        "DFZhpuQmWfC_NBjK0"
+      );
+      alert("✅ Message sent!");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        place: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("❌ Failed to send message.");
+    }
+   
+
+
+    setIssubmitting(false);
+  };
+
+    
   return (
     <section id="contact" className="py-20 bg-white scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,8 +75,9 @@ const ContactSection = () => {
             Always excited to collaborate on innovative projects, discuss tech trends, or just have a great conversation
           </p>
         </div>
+        
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <Card className="bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg border-0">
               <CardHeader className="text-center">
@@ -51,6 +111,94 @@ const ContactSection = () => {
               </CardContent>
             </Card>
           </div>
+          <div className="flex justify-center mb-16">
+            <div className="w-full md:w-4/5 lg:w-2/3 xl:w-1/2">
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
+                  <Mail className="w-6 h-6 mr-2 text-blue-600" />
+                  Send me a message
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="firstname"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="lastname"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="your@example.com"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="place">Location</Label>
+                    <Input
+                      id="place"
+                      name="place"
+                      type="text"
+                      value={formData.place}
+                      onChange={handleInputChange}
+                      placeholder="City, Country"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Message</Label>
+                    <Textarea
+                      id="description"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="Tell me about your project or inquiry..."
+                      rows={4}
+                    />
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3"
+                  >
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          
+        </div>
+        </div>
 
           <div className="text-center space-y-8">
             <div>
@@ -78,6 +226,7 @@ const ContactSection = () => {
             </div>
           </div>
         </div>
+       
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Camera, MapPin, Trophy, Users, Heart } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 
 
 interface Photo {
@@ -67,6 +68,11 @@ const PhotosSection = () => {
     return acc;
   }, {});
 
+  const currentPhotos = photosByCategory[activeCategory] || [];
+  function Autoplay(arg0: { delay: number; stopOnInteraction: boolean; }): import("embla-carousel").CreatePluginType<import("node_modules/embla-carousel/esm/components/Plugins").LoosePluginType, {}> {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <section id="photos" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,31 +104,8 @@ const PhotosSection = () => {
           ))}
         </div>
 
-        {/* Photo Grid */}
-        {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {(photosByCategory[activeCategory] || []).map((photo, index) => (
-            <div
-              key={photo.id}
-              className="group relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="aspect-square overflow-hidden">
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-white text-sm font-medium">{photo.alt}</p>
-                  <p className="text-gray-200 text-xs">{photo.location}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div> */}
-          {(photosByCategory[activeCategory] || []).length > 0 ? (
+      
+          {/* {(photosByCategory[activeCategory] || []).length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {(photosByCategory[activeCategory] || []).map((photo, index) => (
               <div
@@ -146,7 +129,74 @@ const PhotosSection = () => {
               </div>
                ))}
           </div>
-        ) : (
+        )  */}
+         {currentPhotos.length > 0 ? (
+          <>
+            {/* Mobile Carousel */}
+            <div className="block md:hidden">
+              <Carousel opts={{loop:true}} className="w-full max-w-sm mx-auto"
+           //write a code to auto movement of carousel
+
+              >
+                <CarouselContent>
+                  {currentPhotos.map((photo, index) => (
+                    <CarouselItem key={photo.id}>
+                      <div className="group relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+                        <div className="aspect-square overflow-hidden">
+                          <img
+                            src={photo.src}
+                            alt={photo.alt}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-0 left-0 right-0 p-4">
+                            <p className="text-white text-sm font-medium">{photo.alt}</p>
+                            <p className="text-gray-200 text-xs">{photo.location}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {/* <CarouselPrevious />
+                <CarouselNext /> */}
+                <div className="absolute top-1/2 left-2 transform -translate-y-1/2 z-10 block md:hidden">
+      <CarouselPrevious />
+    </div>
+    <div className="absolute top-1/2 right-2 transform -translate-y-1/2 z-10 block md:hidden">
+      <CarouselNext />
+    </div>
+              </Carousel>
+            </div>
+
+            {/* Desktop Grid */}
+            <div className="hidden md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {currentPhotos.map((photo, index) => (
+                <div
+                  key={photo.id}
+                  className="group relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="aspect-square overflow-hidden">
+                    <img
+                      src={photo.src}
+                      alt={photo.alt}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <p className="text-white text-sm font-medium">{photo.alt}</p>
+                      <p className="text-gray-200 text-xs">{photo.location}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) 
+        : (
           <div className="text-center py-12">
             <Camera className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">No photos in this category yet</h3>
